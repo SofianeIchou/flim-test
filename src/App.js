@@ -1,14 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLocalStorage } from "usehooks-ts";
+
 import "./App.css";
 
 function App() {
   // State Hook - `useState`
   const [newItem, setNewItem] = useState("");
   const [items, setItems] = useState([]);
+  const [itemLocal, setItemLocal] = useLocalStorage("itemLocal", items);
 
   const [showEdit, setShowEdit] = useState(-1);
   const [updatedText, setUpdatedText] = useState("");
 
+  useEffect(() => {
+    setItems(itemLocal);
+  }, []);
+  useEffect(() => {
+    setItemLocal(items);
+  }, [items]);
   // Helper Functions
 
   /* Adds a new item to the list array*/
@@ -26,7 +35,7 @@ function App() {
 
     // Add new item to items array
     setItems((oldList) => [...oldList, item]);
-
+    //setItemLocal((oldList) => [...oldList, item]);
     // Reset newItem back to original state
     setNewItem("");
   }
@@ -35,6 +44,7 @@ function App() {
   function deleteItem(id) {
     const newArray = items.filter((item) => item.id !== id);
     setItems(newArray);
+    //setItemLocal(newArray);
   }
 
   /* Edit an item text after creating it. */
@@ -52,6 +62,7 @@ function App() {
 
     // Replace item in the item list
     setItems((oldList) => [...oldList, newItem]);
+    //setItemLocal((oldList) => [...oldList, newItem]);
     setUpdatedText("");
     setShowEdit(-1);
   }
